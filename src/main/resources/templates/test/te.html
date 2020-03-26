@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+   管理员:<input type="radio" class="text" name="text" value="1" checked="checked">
+   教师:<input type="radio" class="text" name="text" value="2">
+   学生:<input type="radio" class="text" name="text" value="3">
+    <button onclick="sub()">提交</button>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script>
+    function sub() {
+        var chkRadio = $('input:radio[name="text"]:checked').val();
+        alert(chkRadio)
+        $.ajax({
+            url:'/test/te',
+            type:'GET', //GET
+            async:true,    //或false,是否异步
+            data:{
+                k:chkRadio
+            },
+            timeout:5000,    //超时时间
+            //返回的数据格式：json/xml/html/script/jsonp/text
+            success:function(data){
+                console.log(data)
+                if(data.data == 200){
+                    alert("管理员")
+                }else if(data.data == 300){
+                    alert("老师")
+                }else {
+                    alert("学生")
+                }
+            },
+            error:function(xhr,textStatus){
+                alert("无数据"+xhr);
+            }
+        })
+    }
+    // function test() {
+    //     var chkRadio = $('input:radio[name="text"]:checked').val();
+    //     alert(chkRadio)
+    // }
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/css/layui.css" th:href="@{/css/layui.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">会员</a></li>
+            <li class="layui-nav-item"><a href="">消息</a></li>
+            <li class="layui-nav-item"><a href="">稍后再看</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">收藏</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">历史</a></li>
+            <li class="layui-nav-item"><a href="">创作中心</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right" th:replace="zuzhi/_fragments::users">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <p th:text="${session.user.username}"></p>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd th:text="${session.user.password}"><a href="">基本资料</a></dd>
+                    <dd th:text="${session.user.phone}"><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">组织管理</a>
+                    <dl class="layui-nav-child" th:replace="zuzhi/_fragments::container">
+                        <dd><a href="#">角色管理</a></dd>
+                        <dd><a href="javascript:;">菜单权限管理</a></dd>
+                        <dd><a href="javascript:;">部门管理</a></dd>
+                        <dd><a href="javascript:;">用户管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">系统管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">日志管理</a></dd>
+                        <dd><a href="javascript:;">接口管理</a></dd>
+                        <dd><a href="">SQL监控</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">统计分析</a></li>
+                <li class="layui-nav-item"><a href="">归档项目</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="panel panel-default operation_role" >
+            <div class="panel-heading title"></div>
+            <div class="layui-card-body">
+                <form class="layui-form " action="" lay-filter="deptInfo" style="width: 700px;margin-top: 10px">
+                    <input name="id" hidden/>
+                    <input name="pid" hidden/>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">角色名称</label>
+                        <div class="layui-input-block">
+                            <input type="name" name="name" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-form-label ">备注</div>
+                        <div class="layui-input-block">
+                            <input type="description" name="description" placeholder="请输入备注信息" autocomplete="off" class="layui-input" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="status" lay-skin="switch" lay-filter="switch" lay-text="启用|禁用" checked>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">请选择权限</label>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-tree">
+                            <div id="permissionTree"></div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit">保存</button>
+                            <button  class="layui-btn layui-btn-primary" id="btn_cancel">返回</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="role_table_div">
+            <div id="searchParam"  :hasPermission="sys:role:list">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <input type="text" id="roleId" class="layui-input"  autocomplete="off" placeholder="请输入角色ID">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" id="roleName" class="layui-input"  autocomplete="off" placeholder="请输入角色名称">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="createTime" placeholder="创建时间">
+                    </div>
+                    <div class="layui-input-inline layui-form">
+                        <select  id="status"  >
+                            <option value="">请选择角色状态</option>
+                            <option value="1">正常</option>
+                            <option value="0">弃用</option>
+                        </select>
+                    </div>
+                    <div class="layui-input-inline ">
+                        <button class="layui-btn"   id="search">查询</button>
+                    </div>
+                </div>
+
+            </div>
+            <table class="layui-hide" id="role_table" lay-filter="role_table"></table>
+            <div id="laypage" class="layui-laypage-btn"></div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="../static/js/layui.all.js" th:src="@{/js/layui.all.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script>
+    //JavaScript代码区域
+    layui.use('element', function(){
+        var element = layui.element;
+
+    });
+</script>
+</body>
+</html>

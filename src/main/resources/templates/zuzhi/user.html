@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="../../static/css/layui.css" th:href="@{/css/layui.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin" id="kp">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">会员</a></li>
+            <li class="layui-nav-item"><a href="">消息</a></li>
+            <li class="layui-nav-item"><a href="">稍后再看</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">收藏</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">历史</a></li>
+            <li class="layui-nav-item"><a href="">创作中心</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right" th:replace="zuzhi/_fragments::users">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">组织管理</a>
+                    <dl class="layui-nav-child" th:replace="zuzhi/_fragments::container">
+                        <dd><a href="#">角色管理</a></dd>
+                        <dd><a href="javascript:;">菜单权限管理</a></dd>
+                        <dd><a href="javascript:;">部门管理</a></dd>
+                        <dd><a href="javascript:;">用户管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">系统管理</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">日志管理</a></dd>
+                        <dd><a href="javascript:;">接口管理</a></dd>
+                        <dd><a href="">SQL监控</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">统计分析</a></li>
+                <li class="layui-nav-item"><a href="">归档项目</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="ui container">
+            <div  class="ui secondary segment form">
+                <input type="hidden" name="page" >
+                <div class="inline fields">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="请输入用户名">
+                    </div>
+                    <div class="field">
+                        <div class="ui labeled action input">
+                            <div class="ui type selection dropdown">
+                                <input type="hidden" name="typeId">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">分类</div>
+                                <div class="menu">
+                                    <div class="item" data-value="1">错误日志</div>
+                                    <!--/*-->
+                                    <div class="item" data-value="2">开发者手册</div>
+                                    <!--*/-->
+                                </div>
+                            </div>
+                            <button id="clear-btn" class="ui compact button">clear</button>
+                        </div>
+
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="recommend" name="recommend">
+                            <label for="recommend">推荐</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button  type="button" id="search-btn" class="ui mini teal basic button"><i class="search icon"></i>搜索</button>
+                        <button  type="button" id="green-btn" class="ui mini teal basic button"><i class="search icon"></i>新增</button>
+                    </div>
+                </div>
+            </div>
+            <div id="table-container">
+                <table class="ui compact teal table" id="table1">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>技能描述</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>删除状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="users : ${user}">
+                        <th th:text="${users.id}" id="cid">ID</th>
+                        <td th:text="${users.name}">刻意练习清单</td>
+                        <td th:text="${users.description}">认知升级</td>
+                        <td th:text="${users.createtime}">是</td>
+                        <td th:text="${users.updatetime}">草稿</td>
+                        <td th:text="${users.deleted} ? '是':'否'"></td>
+                        <td>
+                            <a href="#" class="ui mini floated teal basic button edit" th:onclick="'javascript:check('+${users.id}+')'">编辑</a>
+                            <a href="#" class="ui mini left floated teal basic button">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th colspan="5">
+                            <div class="ui mini pagination menu" th:if="${user.totalPages}>1" >
+                                <a onclick="page(this)" th:attr="data-page=${user.number}-1" class="item" th:unless="${user.first}">上一页</a>
+                                <a onclick="page(this)" th:attr="data-page=${user.number}+1" class=" item" th:unless="${user.last}">下一页</a>
+                            </div>
+                            <a href="#" th:href="@{/admin/add}" class="ui mini right floated teal basic button">新增</a>
+                        </th>
+                    </tr>
+                    </tfoot>
+                </table>
+                <!--模态窗口-->
+                <div class="ui column third center modal mk">
+                    <div style="margin: 20%!important;margin-top: 5%!important;">
+                    <form class="ui form" th:action="@{/userpo/add}" action="#" method="post">
+                        <div class="field">
+                            <label>用户名:</label>
+                            <input type="text" name="name" placeholder="用户名">
+                        </div>
+                        <div class="field">
+                            <label>描述:</label>
+                            <input type="password" name="description" placeholder="描述">
+                        </div>
+                        <button class="ui button basic green" type="submit">提交</button>
+                        <button class="ui button blue" type="reset">重置</button>
+                    </form>
+                    </div>
+                </div>
+                <!--编辑窗口-->
+                <div class="ui column third center modal ml">
+                    <div style="margin: 20%!important;margin-top: 5%!important;">
+                        <form class="ui form" action="#" method="post">
+                            <div class="field">
+                                <label>用户名:</label>
+                                <input type="text" name="name" placeholder="用户名" class="yhm">
+                            </div>
+                            <div class="field">
+                                <label>描述:</label>
+                                <input type="text" name="description" placeholder="描述" class="ms">
+                            </div>
+                            <div class="field">
+                                <label>状态码:</label>
+                                <input type="text" name="description" placeholder="状态码" class="ztm">
+                            </div>
+                            <button class="ui button basic green" type="submit">提交</button>
+                            <button class="ui button blue" type="reset">重置</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                    <i class="close icon"></i>
+                    <div class="header">提示：</div>
+                    <p th:text="${message}">恭喜，操作成功！</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="../../static/js/layui.all.js" th:src="@{/js/layui.all.js}"></script>
+<script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+<script type="text/javascript" th:inline="javascript" xmlns:th="http://www.thymeleaf.org">
+    var id =$("#cid").val()
+    console.log(id)
+</script>
+<script>
+    //JavaScript代码区域
+    ;!function(){
+        var layer = layui.layer
+            ,form = layui.form;
+    }();
+    /*
+    模态框口的打开
+     */
+    $(function () {
+        $("#green-btn").on("click",function () {
+            $(".mk").modal("show");
+        });
+        // $(".edit").on("click",function () {
+        //     $.ajax({
+        //         url:'/userpo/test/{id}(id=${users.id})',
+        //         type:'GET', //GET
+        //         async:true,    //或false,是否异步
+        //         data:{
+        //             "id":id
+        //         },
+        //         timeout:5000,    //超时时间
+        //         //返回的数据格式：json/xml/html/script/jsonp/text
+        //         success:function(data){
+        //             $(".yhm").val(data.name)
+        //             $(".ms").val(data.description)
+        //             $(".ztm").val(data.statu)
+        //             $(".ml").modal("show");
+        //         },
+        //         error:function(xhr,textStatus){
+        //             alert("无数据");
+        //         }
+        //     })
+        // })
+    })
+
+    function check(id) {
+        $.ajax({
+            url:'/userpo/test',
+            type:'GET', //GET
+            async:true,    //或false,是否异步
+            data:{
+                "id":id
+            },
+            timeout:5000,    //超时时间
+            //返回的数据格式：json/xml/html/script/jsonp/text
+            success:function(data){
+                $(".yhm").val(data.name)
+                $(".ms").val(data.description)
+                $(".ztm").val(data.statu)
+                $(".ml").modal("show");
+            },
+            error:function(xhr,textStatus){
+                alert("无数据");
+            }
+        })
+    }
+    function page(obj) {
+        $("[name='page']").val($(obj).data("page"));
+        loaddata();
+    }
+    function loaddata() {
+        $("#kp").load(/*[[@{/admin/user/search}]]*/"/admin/user/search",{
+            page : $("[name='page']").val()
+        });
+    }
+
+
+</script>
+</body>
+</html>

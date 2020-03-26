@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>测试随机图片</title>
+</head>
+<body>
+<h1>测试图片</h1>
+<hr>
+<div class="field-wrap" data-field="mobile" style="position:relative;z-index:100;">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username"></td>
+        </tr>
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>验证码:</td>
+            <td>
+                <span class="field">
+                    <input class="ui-text short ms" type="text" name="verify_code" maxlength="4" >
+                    <span class="error" style="display: inline;"></span>
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="#" class="doc-color-link desc" onclick="javascript:changeImg()" >换一个？</a>
+            </td>
+            <td>
+                <span class="field vcode" data-type="vcode">
+                <img  width="120" id="verify_code_img" height="32" src="/sys/getVerify" onclick="javascript:changeImg()">
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td><input type="button" value="提交" onclick="submit()"></td>
+        </tr>
+    </table>
+
+
+
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    function changeImg(){
+        var img = document.getElementById("verify_code_img");
+        img.src = "/sys/getVerify?"+new Date();
+    }
+    function submit() {
+        var verify_code =$(".ms").val();
+        console.log(verify_code)
+        $.ajax({
+            url:'/sys/checkVerify',
+            type:'POST', //GET
+            async:true,    //或false,是否异步
+            data:{
+                "verifyInput":verify_code
+            },
+            timeout:5000,    //超时时间
+            //返回的数据格式：json/xml/html/script/jsonp/text
+            success:function(data){
+                if(data ==true){
+                    alert("成功")
+                }else {
+                    alert("失败")
+                }
+            },
+            error:function(xhr,textStatus){
+                alert("无数据"+xhr);
+            }
+        })
+    }
+</script>
+</html>

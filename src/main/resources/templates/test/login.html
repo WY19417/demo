@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="ui error message" th:unless="${#strings.isEmpty(msg)}">
+    <p th:text="${msg}" style="color: red">用户名重复,请换个名字</p>
+</div>
+<h1>用户登录</h1>
+<hr>
+<table>
+    <form action="/test/login" th:action="@{/test/login}" method="post">
+        用户登录:<input type="text" name="username"><br/>
+        输入密码<input type="password" name="password"><br/>
+        <input type="checkbox" name="rememberMe">记住我<br/>
+        <input type="submit" value="提交">
+    </form>
+</table>
+</body>
+</html>

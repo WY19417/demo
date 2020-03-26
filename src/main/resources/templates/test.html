@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码测试</title>
+</head>
+<body style="width: 300px;height: 300px;margin: 0 auto">
+<form action="/sys/checkVerify" th:action="@{/sys/checkVerify}" method="post">
+<div class="row">
+    <div class="col-xs-6 pull_left">
+        <div class="form-group">
+            <input class="form-control" type="tel" name="verifyInput" id="verifyinput" placeholder="请输入验证码" maxlength="4">
+        </div>
+    </div>
+    <div class="col-xs-6 pull_left">
+        <a href="javascript:void(0);" rel="external nofollow" title="点击更换验证码">
+            <img id="imgVerify" src="/sys/getVerify" alt="更换验证码" height="36" width="100%" onclick="getVerify(this);">
+        </a>
+        <input type="submit" name="verify_input" onclick="aVerify()" value="验证">
+    </div>
+</div>
+</form>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script>
+    function getVerify(obj){
+        obj.src ="/sys/getVerify?"+Math.random();
+    }
+    function aVerify(){
+        var value =$("#verify_input").val();
+        // alert(value);
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'login/checkVerify',
+            dataType: "json",
+            data: {
+                verifyInput: value
+            },
+            success: function (result) {
+                if (result) {
+                    alert("success!");
+                } else {
+                    alert("failed!");
+                }
+                // window.location.reload();
+                getVerify();
+            }
+        });
+    }
+</script>
+</html>
